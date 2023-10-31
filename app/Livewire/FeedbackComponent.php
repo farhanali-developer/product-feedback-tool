@@ -5,6 +5,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Feedbacks;
+use Masmerise\Toaster\Toaster;
 
 class FeedbackComponent extends Component
 {
@@ -15,7 +16,7 @@ class FeedbackComponent extends Component
     public function render()
     {
         return view('livewire.feedback-component', [
-            'feedbacks' => Feedbacks::latest()->paginate(10),
+            'feedbacks' => Feedbacks::with('user')->latest()->paginate(10),
         ]);
     }
 
@@ -34,6 +35,8 @@ class FeedbackComponent extends Component
             'user_id' => auth()->id(),
         ]);
 
+        // $this->dispatch('show-success-toast', ['message' => 'Feedback submitted successfully!']);
+        Toaster::success('Feedback submitted successfully!');
         $this->resetForm();
     }
 

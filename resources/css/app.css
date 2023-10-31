@@ -1,0 +1,7 @@
+.sticky-form-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* You can adjust the z-index value as needed */
+    background-color: #ffffff; /* Set the background color of the sticky form */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow for a subtle elevation effect */
+}

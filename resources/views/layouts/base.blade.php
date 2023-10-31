@@ -24,8 +24,12 @@
     </head>
 
     <body class="dark:bg-black">
-        {{-- @yield('body') --}}
+        <x-toaster-hub />
+        @if(View::hasSection('body'))
+        @yield('body')
+    @elseif(isset($slot))
         {{ $slot }}
+    @endif
         @livewireScripts
     </body>
 </html>
