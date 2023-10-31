@@ -16,7 +16,10 @@ class FeedbackComponent extends Component
     public function render()
     {
         return view('livewire.feedback-component', [
-            'feedbacks' => Feedbacks::with('user')->latest()->paginate(10),
+            'feedbacks' => Feedbacks::with('user')
+            ->where("visibility", true)
+            ->latest()
+            ->paginate(10),
         ]);
     }
 

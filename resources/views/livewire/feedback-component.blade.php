@@ -12,19 +12,19 @@
                     <div class="mt-5 p-4 relative z-10 bg-white border rounded-xl sm:mt-10 md:p-10 dark:bg-gray-800 dark:border-gray-700">
                         <form wire:submit.prevent="submitFeedback">
                             <div class="mb-4 sm:mb-8">
-                                <label for="title" class="block mb-2 text-sm font-medium dark:text-white">Title</label>
+                                <label for="title" class="block mb-2 text-sm font-medium dark:text-white">Title <span class="text-red-600">*</span></label>
                                 <input wire:model.lazy="title" type="text" id="title" class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Title">
                                 @error('title') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
             
                             <div class="mb-4 sm:mb-8">
-                                <label for="description" class="block mb-2 text-sm font-medium dark:text-white">Description</label>
+                                <label for="description" class="block mb-2 text-sm font-medium dark:text-white">Description <span class="text-red-600">*</span></label>
                                 <textarea wire:model.lazy="description" id="description" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Description"></textarea>
                                 @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
             
                             <div class="mb-4 sm:mb-8">
-                                <label for="category" class="block mb-2 text-sm font-medium dark:text-white">Category</label>
+                                <label for="category" class="block mb-2 text-sm font-medium dark:text-white">Category <span class="text-red-600">*</span></label>
                                 <select wire:model.lazy="category" id="category" class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
                                     <option value="">Select Category</option>
                                     <option value="bug">Bug</option>
