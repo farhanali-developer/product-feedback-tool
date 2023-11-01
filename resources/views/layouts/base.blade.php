@@ -25,6 +25,7 @@
 
     <body class="dark:bg-black">
         <x-toaster-hub />
+        <livewire:navbar />
         @if(View::hasSection('body'))
         @yield('body')
     @elseif(isset($slot))

@@ -22,11 +22,10 @@ use App\Livewire\FeedbackComponent;
 |
 */
 
-Route::view('/', 'welcome')->name('home');
-Route::get('/feedback', FeedbackComponent::class);
-// Route::get('/feedback', function(){
-//     return view('livewire.feedback-component');
-// });
+Route::middleware(['auth.livewire'])->group(function () {
+    Route::get('/', FeedbackComponent::class)->name("home");
+});
+
 
 Route::middleware('guest')->group(function () {
     Route::get('login', Login::class)

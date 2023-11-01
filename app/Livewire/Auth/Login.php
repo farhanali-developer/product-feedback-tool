@@ -31,6 +31,12 @@ class Login extends Component
             return;
         }
 
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return redirect('/admin');
+        }
+
         return redirect()->intended(route('home'));
     }
 

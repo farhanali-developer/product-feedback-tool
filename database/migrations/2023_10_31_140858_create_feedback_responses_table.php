@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('feedback_responses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('feedback_id')->constrained('feedbacks');
+            $table->text('description');
             $table->timestamps();
         });
     }

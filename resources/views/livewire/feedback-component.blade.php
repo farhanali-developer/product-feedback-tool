@@ -51,17 +51,17 @@
                         All Feedbacks
                     </h2>
                 </div>
-                @foreach($feedbacks as $feedback)
+                @foreach($feedbacksWithResponses as $feedbackData)
                 <div class="flex-col w-full py-4 mx-auto bg-white border rounded-xl sm:mt-10 md:p-10 dark:bg-gray-800 dark:border-gray-700">
                     <div class="flex flex-row">
                         {{-- <img class="object-cover w-12 h-12 border-2 border-gray-300 rounded-full" alt="Noob master's avatar" src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80"> --}}
                         <svg class="object-cover w-12 h-12 border-2 border-gray-300 rounded-full" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#606161;}</style></defs><title/><g data-name="Layer 7" id="Layer_7"><path class="cls-1" d="M19.75,15.67a6,6,0,1,0-7.51,0A11,11,0,0,0,5,26v1H27V26A11,11,0,0,0,19.75,15.67ZM12,11a4,4,0,1,1,4,4A4,4,0,0,1,12,11ZM7.06,25a9,9,0,0,1,17.89,0Z"/></g></svg>
                         <div class="flex-col mt-1 ml-2">
-                            <div class="flex items-center flex-1 px-4 font-bold leading-tight dark:text-white">{{ $feedback->user->name }}
-                                <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">2 weeks ago</span>
+                            <div class="flex items-center flex-1 px-4 font-bold leading-tight dark:text-white">{{ $feedbackData['user']->name }}
+                                <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($feedbackData['feedback']->created_at)->diffForHumans() }}</span>
                             </div>
-                            <div class="flex-1 px-2 ml-2 text-sm font-medium leading-loose text-gray-600 dark:text-gray-400">{{ $feedback->description }}</div>
-                            <button class="inline-flex items-center px-1 pt-2 ml-1 flex-column">
+                            <div class="flex-1 px-2 ml-2 text-sm font-medium leading-loose text-gray-600 dark:text-gray-400">{{ $feedbackData['feedback']->description }}</div>
+                            <button class="inline-flex items-center px-1 pt-2 ml-1 flex-column" id="reply-back" onclick="openModal('{{ $feedbackData['feedback']->id }}', '{{ $feedbackData['feedback']->title }}')">
                                 <svg class="w-5 h-5 ml-2 text-gray-600 cursor-pointer fill-current hover:text-gray-900"
                                     viewBox="0 0 95 78" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -77,19 +77,50 @@
                                     </path>
                                 </svg>
                             </button>
+                            <form id="replyForm" wire:submit.prevent="submitReply">
+                                Reply to {{ $feedbackData['feedback']->id }}
+                                <input type="hidden" wire:modal="feedback_id" value="{{ $feedbackData['feedback']->id }}" disabled />
+                                <div class="mb-4">
+                                    {{-- <label for="response_description" class="block text-sm font-medium text-gray-600">Description</label> --}}
+                                    <textarea wire:model.lazy="response_description" id="response_description" name="response_description" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400" placeholder="Description"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded">Submit</button>
+                            </form>
                         </div>
                     </div>
+                            <!-- Modal -->
+                    {{-- <div id="modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+                        <div class="modal-container bg-white w-96 mx-auto rounded shadow-lg p-8 relative">
+                            <!-- Close Button (Cross Icon) -->
+                            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <h2 class="text-xl font-semibold mb-4" id="feedback-title">Reply to {{ $feedbackData['feedback']->title }}</h2>
+                            <form id="replyForm" wire:submit.prevent="submitReply">
+                                <input type="number" wire:modal.lazy="feedback_id" value="{{ $feedbackData['feedback']->id }}" disabled />
+                                <div class="mb-4">
+                                    <label for="response_description" class="block text-sm font-medium text-gray-600">Description</label>
+                                    <textarea wire:model.lazy="response_description" id="response_description" name="response_description" rows="4" class="mt-1 p-2 w-full border rounded focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded">Submit</button>
+                            </form>
+                        </div>
+                    </div> --}}
+
+                    @if($feedbackData['response'])
                     <hr class="my-2 ml-16 border-gray-200">
                     <div class="flex flex-row pt-1 md-10 md:ml-16">
                         {{-- <img class="w-12 h-12 border-2 border-gray-300 rounded-full" alt="Emily's avatar" src="https://images.unsplash.com/photo-1581624657276-5807462d0a3a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80"> --}}
                         <svg class="object-cover w-12 h-12 border-2 border-gray-300 rounded-full" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#606161;}</style></defs><title/><g data-name="Layer 7" id="Layer_7"><path class="cls-1" d="M19.75,15.67a6,6,0,1,0-7.51,0A11,11,0,0,0,5,26v1H27V26A11,11,0,0,0,19.75,15.67ZM12,11a4,4,0,1,1,4,4A4,4,0,0,1,12,11ZM7.06,25a9,9,0,0,1,17.89,0Z"/></g></svg>
                         <div class="flex-col mt-1 ml-2">
-                            <div class="flex items-center flex-1 px-4 font-bold leading-tight dark:text-white">Emily
-                                <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">5 days ago</span>
+                            <div class="flex items-center flex-1 px-4 font-bold leading-tight dark:text-white">{{ $feedbackData['user']->name }}
+                                <span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($feedbackData['response']->created_at)->diffForHumans() }}</span>
                             </div>
-                            <div class="flex-1 px-2 ml-2 text-sm font-medium leading-loose text-gray-600 dark:text-gray-400">I created it using
-                                TailwindCSS
-                            </div>
+                            <div class="flex-1 px-2 ml-2 text-sm font-medium leading-loose text-gray-600 dark:text-gray-400">{{ $feedbackData['response']->description }}</div>
                             <button class="inline-flex items-center px-1 pt-2 ml-1 flex-column">
                                 <svg class="w-5 h-5 ml-2 text-gray-600 cursor-pointer fill-current hover:text-gray-900"
                                     viewBox="0 0 95 78" xmlns="http://www.w3.org/2000/svg">
@@ -107,10 +138,49 @@
                             </button>
                         </div>
                     </div>
+                    @endif
                 </div>
                 @endforeach
-                {{ $feedbacks->links() }}
+                {{-- {{ $feedbacks->links() }} --}}
             </div>
         </div>
+
+
+
+        <script>
+            function openModal(feedbackId, feedbackTitle) {
+                // console.log(feedbackId);
+                document.getElementById('modal').classList.remove('hidden');
+                // document.querySelector('input[name="feedback_id"]').setAttribute(':value', feedbackId);
+                // document.getElementById('feedback-title').innerHTML = "Reply to " + feedbackTitle;
+            }
+
+            function closeModal() {
+                document.getElementById('modal').classList.add('hidden');
+            }
+        
+            document.getElementById('replyForm').addEventListener('submit', function(event) {
+                closeModal();
+            });
+
+            document.getElementById('replyForm').addEventListener('submit', function(event) {
+  // Prevent the default form submission behavior.
+  event.preventDefault();
+
+  // Get all the input fields in the form.
+  const inputFields = event.target.querySelectorAll('input,textarea');
+
+  // Create an object to store the input field data.
+  const formData = {};
+
+  // Loop through the input fields and add their data to the formData object.
+  for (const inputField of inputFields) {
+    formData[inputField.name] = inputField.value;
+  }
+
+  // Display the input field data in the console log.
+  console.log(formData);
+});
+        </script>
     </div>
 </div>
