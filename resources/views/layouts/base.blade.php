@@ -27,10 +27,10 @@
         <x-toaster-hub />
         <livewire:navbar />
         @if(View::hasSection('body'))
-        @yield('body')
-    @elseif(isset($slot))
-        {{ $slot }}
-    @endif
+            @yield('body')
+        @elseif(isset($slot))
+            {{ $slot }}
+        @endif
         @livewireScripts
     </body>
 </html>

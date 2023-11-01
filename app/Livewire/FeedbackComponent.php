@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Feedbacks;
 use App\Models\FeedbackResponse;
@@ -16,15 +15,9 @@ class FeedbackComponent extends Component
     public $description;
     public $category;
     public $response_description;
-    public $feedback_id;
 
-    
     public function render()
     {
-        // if (!Auth::check()) {
-        //     return redirect('/login');
-        // }
-
 
         $feedbacks = Feedbacks::with('user')
             ->where("visibility", true)
@@ -63,9 +56,9 @@ class FeedbackComponent extends Component
             'user_id' => auth()->id(),
         ]);
 
-        // $this->dispatch('show-success-toast', ['message' => 'Feedback submitted successfully!']);
         Toaster::success('Feedback submitted successfully!');
         $this->resetForm();
+        $this->render();
     }
 
     private function resetForm()
@@ -75,24 +68,4 @@ class FeedbackComponent extends Component
         $this->category = '';
     }
 
-
-    public function submitReply()
-    {
-        
-        $this->validate([
-            'feedback_id' => 'required|numeric',
-            'response_description' => 'required|string'
-        ]);
-
-        Log::info("Feedback ID is: " . $this->feedback_id);
-        Log::info("Feedback is: " . $this->feedback_id);
-
-        // FeedbackResponse::create([
-        //     'user_id' => auth()->id(),
-        //     'feedback_id' => $this->feedback_id,
-        //     'description' => $this->response_description,
-        // ]);
-
-        Toaster::success('Replied to a feedback successfully!');
-    }
 }
