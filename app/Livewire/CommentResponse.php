@@ -3,23 +3,22 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Feedbacks;
 use App\Models\FeedbackResponse;
-use App\Models\User;
-use Illuminate\Support\Facades\Log;
+use App\Models\Feedbacks;
 use Masmerise\Toaster\Toaster;
 
 class CommentResponse extends Component
 {
-    public $feedbackData;
     public $response_description;
     public $feedback_id;
     
 
-    public function mount($feedbackData)
+    public $feedback;
+
+    public function mount(Feedbacks $feedback)
     {
-        $this->feedbackData = $feedbackData;
-        $this->feedback_id = $feedbackData['feedback']->id;
+        $this->feedback = $feedback;
+        $this->feedback_id = $feedback->id;
     }
 
     public function render()
@@ -35,16 +34,22 @@ class CommentResponse extends Component
             'response_description' => 'required|string'
         ]);
 
-        Log::info("Feedback ID is: " . $this->feedback_id);
-        Log::info("Feedback is: " . $this->response_description);
-
         FeedbackResponse::create([
             'user_id' => auth()->id(),
             'feedback_id' => $this->feedback_id,
             'description' => $this->response_description,
         ]);
 
+
+
         Toaster::success('Replied to a feedback successfully!');
-        $this->render();
+        $this->resetForm();
+        $this->dispatch('replySubmitted');
+    }
+
+    private function resetForm()
+    {
+        $this->feedback_id = '';
+        $this->response_description = '';
     }
 }

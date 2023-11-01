@@ -24,6 +24,6 @@ class Feedbacks extends Model
 
     public function feedbackResponse()
     {
-        return $this->hasOne(FeedbackResponse::class, 'feedback_id', 'id');
+        return $this->hasMany(FeedbackResponse::class, 'feedback_id', 'id');
     }
 }

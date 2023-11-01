@@ -8,6 +8,7 @@ use App\Models\FeedbackResponse;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Masmerise\Toaster\Toaster;
+use Livewire\WithPagination;
 
 class FeedbackComponent extends Component
 {
@@ -15,30 +16,19 @@ class FeedbackComponent extends Component
     public $description;
     public $category;
     public $response_description;
+    public $commentResponses = [];
 
+    use WithPagination;
+    
     public function render()
     {
-
-        $feedbacks = Feedbacks::with('user')
+        $feedbacks = Feedbacks::with('user', 'feedbackResponse')
             ->where("visibility", true)
             ->latest()
-            ->paginate(10);
+            ->get();
+            // ->paginate(2);
 
-        $feedbacksWithResponses = [];
-
-        foreach ($feedbacks as $feedback) {
-            $user = User::find($feedback->user_id);
-            $feedbackResponse = FeedbackResponse::where('feedback_id', $feedback->id)->first();
-
-            $feedbackData = [
-                'feedback' => $feedback,
-                'user' => $user,
-                'response' => $feedbackResponse,
-            ];
-            array_push($feedbacksWithResponses, $feedbackData);
-        }
-
-        return view('livewire.feedback-component', compact('feedbacksWithResponses'));
+        return view('livewire.feedback-component', compact('feedbacks'));
     }
 
     public function submitFeedback()
